@@ -4,6 +4,8 @@ Handles calculations, predictions, and recommendations.
 """
 
 import numpy as np
+import warnings
+warnings.filterwarnings('ignore')
 from dataclasses import dataclass
 from typing import Dict, List, Optional
 

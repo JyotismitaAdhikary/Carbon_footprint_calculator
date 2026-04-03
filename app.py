@@ -15,7 +15,7 @@ from carbon_model import (
     RecommendationEngine,
     GLOBAL_BENCHMARKS
 )
-
+from ml_model import ml_predict_trajectory, ACTION_TO_FEATURE_CHANGE
 # Page configuration
 st.set_page_config(
     page_title="Carbon Footprint Calculator",
@@ -393,22 +393,30 @@ def render_results_tab():
             help="How much your consumption might increase yearly"
         ) / 100
     
-    predictor = CarbonPredictor()
-    
-    # Get selected actions from recommendations tab if any
-    reduction_actions = []
-    if st.session_state.selected_actions:
-        reduction_actions = [
-            {'start_year': 1, 'annual_savings_kg': action['savings_kg']}
-            for action in st.session_state.selected_actions
-        ]
-    
-    predictions = predictor.predict(
-        current_footprint=results['total_kg'],
-        years=10,
-        growth_rate=growth_rate,
-        reduction_actions=reduction_actions
-    )
+    # Convert selected recommendations into ML feature-level changes
+    planned_changes = []
+    for action in st.session_state.get('selected_actions', []):
+        mapping = ACTION_TO_FEATURE_CHANGE.get(action['action'])
+        if mapping:
+            change = {'year': 1, 'field': mapping['field'], 'value': mapping['value']}
+
+            # Handle relative values
+            if mapping['value'] == '__half__':
+                change['value'] = user_data.get('car_km_weekly', 0) * 0.5
+            elif mapping['value'] == '__70pct__':
+                change['value'] = user_data.get('electricity_kwh_monthly', 0) * 0.7
+            elif mapping['value'] == '__minus1__':
+                change['value'] = max(0, user_data.get('flights_long_haul', 0) - 1)
+
+            planned_changes.append(change)
+
+    with st.spinner("🤖 Running ML model prediction..."):
+        predictions = ml_predict_trajectory(
+            user_data=user_data,
+            planned_changes=planned_changes,
+            years=10,
+            growth_rate=growth_rate
+        )
     
     with col_proj1:
         # Create projection chart
@@ -705,7 +713,14 @@ def render_about_tab():
 
 def main():
     """Main application entry point."""
-    
+
+    # Train ML model on first run (cached to disk after that)
+    if 'ml_ready' not in st.session_state:
+        with st.spinner("🤖 Initialising ML model (first run only, ~30 seconds)..."):
+            from ml_model import load_or_train_model
+            load_or_train_model()
+            st.session_state.ml_ready = True
+
     init_session_state()
     render_header()
     
