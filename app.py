@@ -670,6 +670,9 @@ def render_about_tab():
 
     ### Creator
     This application was developed by Jyotismita Adhikary, with some support from Claude in designing the web interface.
+
+    ### Updates
+    Working on optimising predictions. Upgrades coming soon! Go green!
     """)
     
     st.markdown("---")
