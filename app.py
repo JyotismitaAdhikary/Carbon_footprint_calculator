@@ -667,6 +667,9 @@ def render_about_tab():
     ### Data Privacy
     
     All calculations happen in your browser. No personal data is stored or transmitted.
+
+    ### Creator
+    This application was developed by Jyotismita Adhikary, with some support from Claude in designing the web interface.
     """)
     
     st.markdown("---")
