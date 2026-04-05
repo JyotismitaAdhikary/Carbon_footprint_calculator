@@ -3,10 +3,11 @@ Carbon Footprint Chatbot - LLM-powered assistant
 Uses Claude API with your emission factors as knowledge base.
 """
 
-import anthropic
 import json
+import anthropic
 import streamlit as st
-client = anthropic.Anthropic(api_key=st.secrets["ANTHROPIC_API_KEY"])
+def _get_client():
+    return anthropic.Anthropic(api_key=st.secrets["ANTHROPIC_API_KEY"])
 # Your existing emission factors as knowledge base for the LLM
 CARBON_KNOWLEDGE_BASE = """
 You are a friendly and knowledgeable carbon footprint assistant built into a personal carbon calculator app.
@@ -84,7 +85,7 @@ def get_chat_response(
     Returns:
         Assistant's response string
     """
-    client = anthropic.Anthropic()
+    client = _get_client()
 
     system_prompt = build_system_prompt(user_data, results)
 
