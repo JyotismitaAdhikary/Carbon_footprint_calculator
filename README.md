@@ -137,12 +137,6 @@ The app compares your footprint against: World Average, USA, EU Average, UK, Ger
 
 ---
 
-## 👩‍💻 Creator
-
-Built by **Jyotismita Adhikary**, with some support from Claude in designing the web interface.
-
----
-
 ## 📄 Data Sources & References
 
 - [EPA Emission Factors](https://www.epa.gov/climateleadership/ghg-emission-factors-hub)
