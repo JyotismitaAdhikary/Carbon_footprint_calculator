@@ -89,7 +89,7 @@ def get_chat_response(
     system_prompt = build_system_prompt(user_data, results)
 
     response = client.messages.create(
-        model="claude-opus-4-5",
+        model="claude-sonnet-4-5",
         max_tokens=1024,
         system=system_prompt,
         messages=messages
