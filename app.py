@@ -681,7 +681,8 @@ def render_about_tab():
     This application was developed by Jyotismita Adhikary, with some support from Claude in designing the web interface.
 
     ### Updates
-    Working on optimising predictions. Upgrades coming soon! Go green!
+    Working on optimising chatbot! Go green!
+    
     """)
     
     st.markdown("---")
@@ -827,7 +828,7 @@ def main():
     st.markdown("---")
     st.markdown(
         '<p style="text-align: center; color: #64748b; font-size: 0.8rem;">'
-        'Built with ❤️ using Streamlit | Data sources: EPA, DEFRA, IPCC'
+        'Built with ❤️ by Jyotismita | Data sources: EPA, DEFRA, IPCC'
         '</p>',
         unsafe_allow_html=True
     )

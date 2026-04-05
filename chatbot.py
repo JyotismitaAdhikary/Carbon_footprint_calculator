@@ -89,14 +89,21 @@ def get_chat_response(
 
     system_prompt = build_system_prompt(user_data, results)
 
-    response = client.messages.create(
-        model="claude-sonnet-4-5",
-        max_tokens=1024,
-        system=system_prompt,
-        messages=messages
-    )
-
-    return response.content[0].text
+    import time
+    for attempt in range(3):
+        try:
+            response = client.messages.create(
+                model="claude-sonnet-4-5",
+                max_tokens=1024,
+                system=system_prompt,
+                messages=messages
+            )
+            return response.content[0].text
+        except anthropic.APIStatusError as e:
+            if e.status_code == 529 and attempt < 2:
+                time.sleep(3)
+                continue
+            raise
 
 
 # Suggested starter questions to show in the UI
