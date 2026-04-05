@@ -16,6 +16,7 @@ from carbon_model import (
     GLOBAL_BENCHMARKS
 )
 from ml_model import ml_predict_trajectory, ACTION_TO_FEATURE_CHANGE
+from chatbot import get_chat_response, SUGGESTED_QUESTIONS
 # Page configuration
 st.set_page_config(
     page_title="Carbon Footprint Calculator",
@@ -710,6 +711,81 @@ def render_about_tab():
     
     st.dataframe(pd.DataFrame(factors_data), use_container_width=True)
 
+def render_chatbot_tab():
+    """Render the AI chatbot assistant tab."""
+
+    st.subheader("🤖 Ask Your Carbon Assistant")
+    st.markdown(
+        '<p style="color: #94a3b8;">Ask anything about your footprint, what changes matter most, '
+        'or why certain habits have such a big impact.</p>',
+        unsafe_allow_html=True
+    )
+
+    # Initialise chat history in session state
+    if 'chat_messages' not in st.session_state:
+        st.session_state.chat_messages = []
+
+    user_data = st.session_state.get('user_data', {})
+    results = st.session_state.get('results', {})
+
+    # Show a banner if calculator not done yet
+    if not st.session_state.get('calculated'):
+        st.info("💡 Complete the calculator first so I can give you personalised answers — "
+                "but you can still ask general carbon questions below!")
+
+    # Suggested questions (only show if chat is empty)
+    if not st.session_state.chat_messages:
+        st.markdown("**Try asking:**")
+        cols = st.columns(3)
+        for i, question in enumerate(SUGGESTED_QUESTIONS):
+            with cols[i % 3]:
+                if st.button(question, key=f"suggested_{i}", use_container_width=True):
+                    st.session_state.chat_messages.append(
+                        {"role": "user", "content": question}
+                    )
+                    with st.spinner("Thinking..."):
+                        reply = get_chat_response(
+                            st.session_state.chat_messages,
+                            user_data,
+                            results
+                        )
+                    st.session_state.chat_messages.append(
+                        {"role": "assistant", "content": reply}
+                    )
+                    st.rerun()
+
+    st.markdown("---")
+
+    # Render chat history
+    for message in st.session_state.chat_messages:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
+
+    # Chat input
+    if prompt := st.chat_input("Ask me about your carbon footprint..."):
+        # Add user message
+        st.session_state.chat_messages.append({"role": "user", "content": prompt})
+        with st.chat_message("user"):
+            st.markdown(prompt)
+
+        # Get and display assistant response
+        with st.chat_message("assistant"):
+            with st.spinner("Thinking..."):
+                reply = get_chat_response(
+                    st.session_state.chat_messages,
+                    user_data,
+                    results
+                )
+            st.markdown(reply)
+
+        st.session_state.chat_messages.append({"role": "assistant", "content": reply})
+
+    # Clear chat button
+    if st.session_state.chat_messages:
+        st.markdown("---")
+        if st.button("🗑️ Clear conversation", type="secondary"):
+            st.session_state.chat_messages = []
+            st.rerun()
 
 def main():
     """Main application entry point."""
@@ -724,11 +800,11 @@ def main():
     init_session_state()
     render_header()
     
-    # Navigation tabs
-    tab1, tab2, tab3, tab4 = st.tabs([
+    tab1, tab2, tab3, tab4, tab5 = st.tabs([
         "📝 Calculator",
         "📊 Results & Predictions",
         "💡 Reduction Tips",
+        "🤖 AI Assistant",
         "ℹ️ About"
     ])
     
@@ -740,8 +816,11 @@ def main():
     
     with tab3:
         render_tips_tab()
-    
+
     with tab4:
+        render_chatbot_tab()
+    
+    with tab5:
         render_about_tab()
     
     # Footer
