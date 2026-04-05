@@ -149,6 +149,4 @@ Built by **Jyotismita Adhikary**, with some support from Claude in designing the
 
 ---
 
-<p align="center">
-  Built with ❤️ using Streamlit &nbsp;|&nbsp; Data: EPA, DEFRA, IPCC &nbsp;|&nbsp; 🌱 Go green!
-</p>
+
