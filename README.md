@@ -17,7 +17,10 @@
 
 ## 📋 Overview
 
-A data-driven web application that helps individuals understand, predict, and reduce their personal carbon footprint. Enter your lifestyle habits today and get a personalised 10-year emissions forecast powered by an XGBoost ML model trained on 50,000 synthetic scenarios.
+As a kid, I wanted to change the world and help planet Earth. Growing up, education and life got in the way and somehow that dream quietly faded into the background. This project is my way of coming back to that idea.
+Most of us don't realise how much our daily habits, what we eat, how we travel, how we heat our homes quietly add up. This calculator is built around the belief that self-reflection is the first step to real change. Not guilt, not overwhelm, just honest awareness. Because if every individual understands their own footprint and makes even one change, that compounds into something much bigger than any one person. This is my small attempt to make a change in myself and others. 
+
+This calculator is a data-driven web application that helps individuals understand, predict, and reduce their personal carbon footprint. Enter your lifestyle habits today and get a personalised 10-year emissions forecast powered by an XGBoost ML model trained on 50,000 synthetic scenarios.
 
 ---
 
